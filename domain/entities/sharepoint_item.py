@@ -48,7 +48,7 @@ class SharePointItem:
         if self.source_list == "gestion_baja":
             # Filtro estricto solicitado por el usuario
             # Solo "Cambio de Post Pago a Pre Pago R" (valor técnico: Pre Pago R)
-            if fields.get("eTipoBaja") != "Pre Pago R":
+            if fields.get("eTipoBaja") not in ("Pre Pago R", "Cambio de Post Pago a Pre Pago R"):
                 return False
 
             return (
