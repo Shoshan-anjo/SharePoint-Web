@@ -56,7 +56,12 @@ const App = () => {
       if (toDate) url += `&to_date=${toDate}`;
       if (forceRefresh) url += `&force_refresh=true`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: {
+          'X-API-Key': import.meta.env.VITE_API_KEY || 'dev-secret-key'
+        }
+      });
+      if (response.status === 401) throw new Error('No autorizado: Llave de API inválida');
       if (!response.ok) throw new Error('Error de conexión con el servidor');
       const data = await response.json();
       setItems(data);

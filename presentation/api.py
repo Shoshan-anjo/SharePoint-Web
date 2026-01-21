@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, Query
+import os
+from fastapi import FastAPI, Depends, Query, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
 import uvicorn
@@ -6,20 +7,28 @@ import uvicorn
 from infrastructure.sharepoint.graph_sharepoint_reader import GraphSharePointReader
 from application.use_cases.get_filtered_items import GetFilteredItemsUseCase
 
+# Security Settings
+API_SECRET_KEY = os.getenv("API_SECRET_KEY", "dev-secret-key")
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+
 app = FastAPI(title="SharePoint Reporting API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+async def verify_api_key(x_api_key: str = Header(...)):
+    if x_api_key != API_SECRET_KEY:
+        raise HTTPException(status_code=401, detail="Unauthorized: Invalid API Key")
+
 def get_reader():
     return GraphSharePointReader()
 
-@app.get("/items")
+@app.get("/items", dependencies=[Depends(verify_api_key)])
 async def get_items(
     status: Optional[str] = Query(None, description="Filter by status: pendiente or procesado"),
     from_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),
