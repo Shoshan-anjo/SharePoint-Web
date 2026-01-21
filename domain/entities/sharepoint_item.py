@@ -19,7 +19,18 @@ class SharePointItem:
 
     @property
     def estado_baja(self) -> str:
-        return str(self.raw_fields.get("eBajaRealizada", self.raw_fields.get("BajaRealizada", ""))).strip()
+        fields = self.raw_fields
+        # Priorizar campos de ejecución
+        val = fields.get("eBajaRealizada") or fields.get("BajaRealizada") or fields.get("Baja_x0020_Realizada")
+        return str(val if val is not None else "").strip()
+
+    @property
+    def tipo_baja_display(self) -> str:
+        fields = self.raw_fields
+        val = fields.get("eTipoBaja") or fields.get("TipodeBaja") or fields.get("TipoBaja")
+        if val == "Pre Pago R":
+            return "Cambio de Post Pago a Pre Pago R"
+        return str(val if val is not None else "N/A")
 
     @property
     def fecha_creacion(self) -> Optional[datetime]:
@@ -46,9 +57,9 @@ class SharePointItem:
     def es_pendiente(self) -> bool:
         fields = self.raw_fields
         if self.source_list == "gestion_baja":
-            # Filtro estricto solicitado por el usuario
-            # Solo "Cambio de Post Pago a Pre Pago R" (valor técnico: Pre Pago R)
-            if fields.get("eTipoBaja") not in ("Pre Pago R", "Cambio de Post Pago a Pre Pago R"):
+            # Filtro estricto por proceso (List 1)
+            tipo = self.tipo_baja_display
+            if tipo != "Cambio de Post Pago a Pre Pago R":
                 return False
 
             return (

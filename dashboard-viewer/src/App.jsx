@@ -565,8 +565,8 @@ const App = () => {
                     </div>
                   </td>
                   <td className="whitespace-nowrap">
-                    <div className="text-text-dim text-xs font-medium truncate max-w-[180px]" title={item?.fields?.eTipoBaja || item?.fields?.TipoBaja || 'N/A'}>
-                      {item?.fields?.eTipoBaja || item?.fields?.TipoBaja || 'N/A'}
+                    <div className="text-text-dim text-xs font-medium truncate max-w-[180px]" title={item?.tipo_baja || 'N/A'}>
+                      {item?.tipo_baja || 'N/A'}
                     </div>
                   </td>
                   <td className="whitespace-nowrap">
