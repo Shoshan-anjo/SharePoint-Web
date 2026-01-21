@@ -22,6 +22,11 @@ const App = () => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [progress, setProgress] = useState(0);
 
+  // API Configuration
+  // In development, this is empty (relative path handled by proxy).
+  // In production (Render), this must be set to the Backend URL (e.g. https://my-api.onrender.com)
+  const BASE_URL = import.meta.env.VITE_API_URL || '';
+
   const fetchItems = async (forceRefresh = false) => {
     setLoading(true);
     setHasSearched(true);
@@ -46,7 +51,7 @@ const App = () => {
     }, 800); // Increased interval from 200ms to 800ms
 
     try {
-      let url = `/api/items?status=${statusFilter}`;
+      let url = `${BASE_URL}/api/items?status=${statusFilter}`;
       if (fromDate) url += `&from_date=${fromDate}`;
       if (toDate) url += `&to_date=${toDate}`;
       if (forceRefresh) url += `&force_refresh=true`;
