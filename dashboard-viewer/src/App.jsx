@@ -195,25 +195,25 @@ const App = () => {
         <div className="bg-glow-top" />
         <div className="bg-glow-bottom" />
         
-        <div className="glass p-16 w-full max-w-[480px] animate-in relative overflow-hidden">
+        <div className="glass p-16 w-full max-w-md animate-in relative overflow-hidden mx-auto">
           <div className="flex-center flex-col mb-12">
             <div className="w-20 h-20 bg-primary/20 rounded-3xl flex-center mb-6 border border-primary/30 shadow-[0_0_20px_rgba(37,99,235,0.2)]">
               <ShieldCheck size={40} className="text-primary" />
             </div>
-            <h2 className="text-4xl font-extrabold text-white mb-3 tracking-tight">Bienvenido</h2>
-            <p className="text-text-dim text-center text-sm max-w-[280px] leading-relaxed">
+            <h2 className="text-4xl font-extrabold text-white mb-3 tracking-tight text-center">Bienvenido</h2>
+            <p className="text-text-dim text-center text-sm max-w-xs leading-relaxed mx-auto">
               Ingresa tus credenciales para acceder al Visor de Gestiones
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-8 px-2">
+          <form onSubmit={handleLogin} className="space-y-8 px-2 mx-auto max-w-xs">
             <div className="date-input-group">
               <label className="text-xs font-bold uppercase tracking-widest text-text-dark mb-2 block">Usuario</label>
               <div className="premium-input-container !h-14">
                 <User size={20} className="text-text-dark ml-4" />
                 <input 
                   type="text" 
-                  placeholder="Tu nombre de usuario"
+                  placeholder="admin"
                   required
                   value={loginData.username}
                   onChange={(e) => setLoginData({...loginData, username: e.target.value})}
@@ -248,7 +248,7 @@ const App = () => {
               <button 
                 type="submit" 
                 disabled={loading}
-                className="btn-primary w-full max-w-[280px] h-14 text-base font-bold shadow-lg shadow-primary/20"
+                className="btn-primary w-full h-14 text-base font-bold shadow-lg shadow-primary/20"
               >
                 {loading ? <RefreshCw className="animate-spin w-6 h-6" /> : 'Acceder al Dashboard'}
               </button>
@@ -295,10 +295,10 @@ const App = () => {
           
           <button 
             onClick={handleLogout}
-            className="w-14 h-14 glass glass-interactive rounded-2xl flex-center text-red-400 hover:bg-red-500/10 transition-all border-red-500/20"
+            className="w-12 h-12 glass glass-interactive rounded-full flex-center text-red-400 hover:text-white hover:bg-red-500 transition-all border border-red-500/30 group"
             title="Cerrar Sesión"
           >
-            <LogOut size={24} />
+            <LogOut size={20} className="group-hover:scale-110 transition-transform" />
           </button>
         </div>
       </header>
