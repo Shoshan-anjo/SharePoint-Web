@@ -256,7 +256,7 @@ const App = () => {
           </form>
           
           <div className="mt-12 pt-8 border-t border-border/50 text-center">
-            <span className="text-text-dark text-[10px] uppercase font-bold tracking-[0.3em] opacity-50">Desarrollo de Shohan.abjo</span>
+            <span className="text-text-dark text-[10px] uppercase font-bold tracking-[0.3em] opacity-50">Desarrollo de Shohan-anjo</span>
           </div>
         </div>
       </div>
@@ -274,7 +274,7 @@ const App = () => {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <div className="w-8 h-1 bg-primary rounded-full" />
-            <span className="text-text-dark font-bold uppercase tracking-widest text-[10px]">Desarrollo de Shohan.abjo</span>
+            <span className="text-text-dark font-bold uppercase tracking-widest text-[10px]">Desarrollo de Shohan-anjo</span>
           </div>
           <h1 className="text-5xl font-extrabold title-gradient">Visor de Gestiones</h1>
           <p className="text-text-dim mt-2 text-lg">Control centralizado de gestiones SharePoint</p>
