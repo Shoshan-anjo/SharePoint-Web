@@ -428,3 +428,14 @@ body {
 
 /* Background Opacity Utilities */
 .bg-white\/10 { background-color: rgba(255, 255, 255, 0.1); }
+
+/* Utilities */
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.scale-110 { transform: scale(1.1); }
+.min-h-screen { min-height: 100vh; }
+.title-gradient {
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

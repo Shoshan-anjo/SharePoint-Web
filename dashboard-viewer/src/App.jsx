@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { RefreshCw, Clock, Database, ChevronRight, LayoutDashboard, ListTodo, Calendar, Filter, HardDrive, Search, ArrowUp, ArrowDown } from 'lucide-react';
+import { RefreshCw, Clock, Database, ChevronRight, LayoutDashboard, ListTodo, Calendar, Filter, HardDrive, Search, ArrowUp, ArrowDown, LogOut, Lock, User, ShieldCheck } from 'lucide-react';
 
 const App = () => {
   const [items, setItems] = useState([]);
@@ -7,6 +7,11 @@ const App = () => {
   const [error, setError] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
   
+  // Auth State
+  const [token, setToken] = useState(localStorage.getItem('dashboard_token') || null);
+  const [loginData, setLoginData] = useState({ username: '', password: '' });
+  const [loginError, setLoginError] = useState(null);
+
   // Filter & Sort States
   const [statusFilter, setStatusFilter] = useState('pendiente');
   const [fromDate, setFromDate] = useState('');
@@ -23,9 +28,43 @@ const App = () => {
   const [progress, setProgress] = useState(0);
 
   // API Configuration
-  // In development, this is empty (relative path handled by proxy).
-  // In production (Render), this must be set to the Backend URL (e.g. https://my-api.onrender.com)
   const BASE_URL = import.meta.env.VITE_API_URL || '';
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setLoginError(null);
+    try {
+      const formData = new FormData();
+      formData.append('username', loginData.username);
+      formData.append('password', loginData.password);
+
+      const response = await fetch(`${BASE_URL}/login`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.detail || 'Error al iniciar sesión');
+      }
+
+      const { access_token } = await response.json();
+      localStorage.setItem('dashboard_token', access_token);
+      setToken(access_token);
+    } catch (err) {
+      setLoginError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('dashboard_token');
+    setToken(null);
+    setItems([]);
+    setHasSearched(false);
+  };
 
   const fetchItems = async (forceRefresh = false) => {
     setLoading(true);
@@ -40,15 +79,14 @@ const App = () => {
     }, 100);
 
     // Progress Simulation Interval
-    // Moves fast initially, then slows down to approach 90% without hitting 100% until done
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 90) return prev; // Cap at 90% while waiting
         const remaining = 90 - prev;
-        const add = remaining * 0.05; // Reduced from 0.1 to 0.05 for slower growth
-        return prev + (add < 0.2 ? 0.2 : add); // Minimum increment reduced
+        const add = remaining * 0.05; 
+        return prev + (add < 0.2 ? 0.2 : add); 
       });
-    }, 800); // Increased interval from 200ms to 800ms
+    }, 800); 
 
     try {
       let url = `${BASE_URL}/items?status=${statusFilter}`;
@@ -58,10 +96,15 @@ const App = () => {
 
       const response = await fetch(url, {
         headers: {
-          'X-API-Key': import.meta.env.VITE_API_KEY || 'dev-secret-key'
+          'Authorization': `Bearer ${token}`
         }
       });
-      if (response.status === 401) throw new Error('No autorizado: Llave de API inválida');
+      
+      if (response.status === 401) {
+        handleLogout();
+        throw new Error('Sesión expirada. Por favor ingresa de nuevo.');
+      }
+      
       if (!response.ok) throw new Error('Error de conexión con el servidor');
       const data = await response.json();
       setItems(data);
@@ -71,13 +114,8 @@ const App = () => {
     } finally {
       clearInterval(timerInterval);
       clearInterval(progressInterval);
-      setProgress(100); // Snap to 100%
-      // Allow user to see 100% briefly before hiding? 
-      // The loading state controls visibility, so we might want a slight delay or just let it vanish.
-      // For now, let's just turn off loading which hides the bar. 
-      // To show the "completion" effect, we'd need to separate loading state from bar visibility, 
-      // but simple is better here.
-      setTimeout(() => setLoading(false), 200); // Short delay to show full bar
+      setProgress(100); 
+      setTimeout(() => setLoading(false), 200); 
     }
   };
 
@@ -151,6 +189,76 @@ const App = () => {
     currentPage * pageSize
   );
 
+  if (!token) {
+    return (
+      <div className="dashboard-container min-h-screen flex items-center justify-center p-6">
+        <div className="bg-glow-top" />
+        <div className="bg-glow-bottom" />
+        
+        <div className="glass p-12 w-full max-w-md animate-in relative overflow-hidden">
+          <div className="flex-center flex-col mb-10">
+            <div className="w-16 h-16 bg-primary/20 rounded-2xl flex-center mb-6 border border-primary/30">
+              <ShieldCheck size={32} className="text-primary" />
+            </div>
+            <h2 className="text-3xl font-bold text-white mb-2">Bienvenido</h2>
+            <p className="text-text-dim text-center">Ingresa tus credenciales para acceder al Visor de Gestiones</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="date-input-group">
+              <label>Usuario</label>
+              <div className="premium-input-container">
+                <User size={18} className="text-text-dark" />
+                <input 
+                  type="text" 
+                  placeholder="admin"
+                  required
+                  value={loginData.username}
+                  onChange={(e) => setLoginData({...loginData, username: e.target.value})}
+                  className="premium-input"
+                />
+              </div>
+            </div>
+
+            <div className="date-input-group">
+              <label>Contraseña</label>
+              <div className="premium-input-container">
+                <Lock size={18} className="text-text-dark" />
+                <input 
+                  type="password" 
+                  placeholder="••••••••"
+                  required
+                  value={loginData.password}
+                  onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                  className="premium-input"
+                />
+              </div>
+            </div>
+
+            {loginError && (
+              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm flex items-center gap-3">
+                <Filter size={14} className="shrink-0" />
+                {loginError}
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="btn-primary w-full h-14 text-lg font-bold mt-4"
+            >
+              {loading ? <RefreshCw className="animate-spin" /> : 'Acceder al Dashboard'}
+            </button>
+          </form>
+          
+          <div className="mt-10 pt-8 border-t border-border text-center">
+            <span className="text-text-dark text-[10px] uppercase font-bold tracking-widest">Desarrollo de Shohan.abjo</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-container">
       {/* Background Glows (Fixed in CSS) */}
@@ -168,16 +276,26 @@ const App = () => {
           <p className="text-text-dim mt-2 text-lg">Control centralizado de gestiones SharePoint</p>
         </div>
         
-        <div className="connection-status glass rounded-3xl flex items-center gap-6 bg-white-5 p-5 px-8 whitespace-nowrap">
-           <div className="flex items-center gap-4">
-              <div className="text-[11px] uppercase font-bold text-text-dark tracking-widest border-r border-border pr-4">
-                Infraestructura
-              </div>
-              <div className="text-accent text-base font-bold flex items-center gap-2">
-                 <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                 Render Cloud Online
-              </div>
-           </div>
+        <div className="flex items-center gap-4">
+          <div className="connection-status glass rounded-3xl flex items-center gap-6 bg-white-5 p-5 px-8 whitespace-nowrap">
+             <div className="flex items-center gap-4">
+                <div className="text-[11px] uppercase font-bold text-text-dark tracking-widest border-r border-border pr-4">
+                  Infraestructura
+                </div>
+                <div className="text-accent text-base font-bold flex items-center gap-2">
+                   <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                   Render Cloud Online
+                </div>
+             </div>
+          </div>
+          
+          <button 
+            onClick={handleLogout}
+            className="w-14 h-14 glass glass-interactive rounded-2xl flex-center text-red-400 hover:bg-red-500/10 transition-all border-red-500/20"
+            title="Cerrar Sesión"
+          >
+            <LogOut size={24} />
+          </button>
         </div>
       </header>
 

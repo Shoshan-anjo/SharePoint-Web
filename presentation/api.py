@@ -1,14 +1,25 @@
 import os
-from fastapi import FastAPI, Depends, Query, HTTPException, Header
-from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime, timedelta
 from typing import List, Optional
+from fastapi import FastAPI, Depends, Query, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import JWTError, jwt
+from passlib.context import CryptContext
 import uvicorn
 
 from infrastructure.sharepoint.graph_sharepoint_reader import GraphSharePointReader
 from application.use_cases.get_filtered_items import GetFilteredItemsUseCase
 
-# Security Settings
-API_SECRET_KEY = os.getenv("API_SECRET_KEY", "dev-secret-key")
+# Security Configuration
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "super-secret-key-for-dev")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # 24 hours
+
+# Single User Credentials (defined in Render)
+DASHBOARD_USER = os.getenv("DASHBOARD_USER", "admin")
+DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD", "admin123")
+
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
 
 app = FastAPI(title="SharePoint Reporting API")
@@ -21,14 +32,45 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-async def verify_api_key(x_api_key: str = Header(...)):
-    if x_api_key != API_SECRET_KEY:
-        raise HTTPException(status_code=401, detail="Unauthorized: Invalid API Key")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        return username
+    except JWTError:
+        raise credentials_exception
+
+@app.post("/login")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    if form_data.username != DASHBOARD_USER or form_data.password != DASHBOARD_PASSWORD:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuario o contraseña incorrectos",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token = create_access_token(data={"sub": form_data.username})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 def get_reader():
     return GraphSharePointReader()
 
-@app.get("/items", dependencies=[Depends(verify_api_key)])
+@app.get("/items", dependencies=[Depends(get_current_user)])
 async def get_items(
     status: Optional[str] = Query(None, description="Filter by status: pendiente or procesado"),
     from_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),

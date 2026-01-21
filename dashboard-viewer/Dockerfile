@@ -14,9 +14,7 @@ COPY . .
 
 # Build Args (Injects variables from Render)
 ARG VITE_API_URL
-ARG VITE_API_KEY
 ENV VITE_API_URL=$VITE_API_URL
-ENV VITE_API_KEY=$VITE_API_KEY
 
 # Build the app
 RUN npm run build

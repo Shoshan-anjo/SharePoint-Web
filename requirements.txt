@@ -1,7 +1,10 @@
+fastapi
+uvicorn
 requests
 python-dotenv
 pandas
 openpyxl
 msal
-fastapi
-uvicorn
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
