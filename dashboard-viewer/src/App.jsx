@@ -51,7 +51,7 @@ const App = () => {
     }, 800); // Increased interval from 200ms to 800ms
 
     try {
-      let url = `${BASE_URL}/api/items?status=${statusFilter}`;
+      let url = `${BASE_URL}/items?status=${statusFilter}`;
       if (fromDate) url += `&from_date=${fromDate}`;
       if (toDate) url += `&to_date=${toDate}`;
       if (forceRefresh) url += `&force_refresh=true`;
