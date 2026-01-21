@@ -195,64 +195,68 @@ const App = () => {
         <div className="bg-glow-top" />
         <div className="bg-glow-bottom" />
         
-        <div className="glass p-12 w-full max-w-md animate-in relative overflow-hidden">
-          <div className="flex-center flex-col mb-10">
-            <div className="w-16 h-16 bg-primary/20 rounded-2xl flex-center mb-6 border border-primary/30">
-              <ShieldCheck size={32} className="text-primary" />
+        <div className="glass p-16 w-full max-w-[480px] animate-in relative overflow-hidden">
+          <div className="flex-center flex-col mb-12">
+            <div className="w-20 h-20 bg-primary/20 rounded-3xl flex-center mb-6 border border-primary/30 shadow-[0_0_20px_rgba(37,99,235,0.2)]">
+              <ShieldCheck size={40} className="text-primary" />
             </div>
-            <h2 className="text-3xl font-bold text-white mb-2">Bienvenido</h2>
-            <p className="text-text-dim text-center">Ingresa tus credenciales para acceder al Visor de Gestiones</p>
+            <h2 className="text-4xl font-extrabold text-white mb-3 tracking-tight">Bienvenido</h2>
+            <p className="text-text-dim text-center text-sm max-w-[280px] leading-relaxed">
+              Ingresa tus credenciales para acceder al Visor de Gestiones
+            </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-8 px-2">
             <div className="date-input-group">
-              <label>Usuario</label>
-              <div className="premium-input-container">
-                <User size={18} className="text-text-dark" />
+              <label className="text-xs font-bold uppercase tracking-widest text-text-dark mb-2 block">Usuario</label>
+              <div className="premium-input-container !h-14">
+                <User size={20} className="text-text-dark ml-4" />
                 <input 
                   type="text" 
-                  placeholder="admin"
+                  placeholder="Tu nombre de usuario"
                   required
                   value={loginData.username}
                   onChange={(e) => setLoginData({...loginData, username: e.target.value})}
-                  className="premium-input"
+                  className="premium-input !pl-12"
                 />
               </div>
             </div>
 
             <div className="date-input-group">
-              <label>Contraseña</label>
-              <div className="premium-input-container">
-                <Lock size={18} className="text-text-dark" />
+              <label className="text-xs font-bold uppercase tracking-widest text-text-dark mb-2 block">Contraseña</label>
+              <div className="premium-input-container !h-14">
+                <Lock size={20} className="text-text-dark ml-4" />
                 <input 
                   type="password" 
                   placeholder="••••••••"
                   required
                   value={loginData.password}
                   onChange={(e) => setLoginData({...loginData, password: e.target.value})}
-                  className="premium-input"
+                  className="premium-input !pl-12"
                 />
               </div>
             </div>
 
             {loginError && (
-              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm flex items-center gap-3">
+              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs flex items-center gap-3 animate-in">
                 <Filter size={14} className="shrink-0" />
                 {loginError}
               </div>
             )}
 
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="btn-primary w-full h-14 text-lg font-bold mt-4"
-            >
-              {loading ? <RefreshCw className="animate-spin" /> : 'Acceder al Dashboard'}
-            </button>
+            <div className="flex justify-center pt-4">
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="btn-primary w-full max-w-[280px] h-14 text-base font-bold shadow-lg shadow-primary/20"
+              >
+                {loading ? <RefreshCw className="animate-spin w-6 h-6" /> : 'Acceder al Dashboard'}
+              </button>
+            </div>
           </form>
           
-          <div className="mt-10 pt-8 border-t border-border text-center">
-            <span className="text-text-dark text-[10px] uppercase font-bold tracking-widest">Desarrollo de Shohan.abjo</span>
+          <div className="mt-12 pt-8 border-t border-border/50 text-center">
+            <span className="text-text-dark text-[10px] uppercase font-bold tracking-[0.3em] opacity-50">Desarrollo de Shohan.abjo</span>
           </div>
         </div>
       </div>
