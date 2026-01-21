@@ -46,6 +46,10 @@ class SharePointItem:
     def es_pendiente(self) -> bool:
         fields = self.raw_fields
         if self.source_list == "gestion_baja":
+            # Si el estado general es Finalizado, no puede estar pendiente
+            if fields.get("eEstado") == "Finalizado":
+                return False
+                
             return (
                 fields.get("eServicio") in ("Móvil", "Móvil B2B") and
                 fields.get("eRetencionEfectiva") == "NO" and
@@ -53,7 +57,7 @@ class SharePointItem:
                 fields.get("eFormularioPendiente") == "Formulario Regularizado" and
                 fields.get("eDeudaPendiente") == "Sin Deuda" and
                 fields.get("eRegularizadoCompleto") == "Se deriva para RPA" and
-                self.estado_baja in (None, "", "None")
+                self.estado_baja in (None, "", "None", "pendiente", "Pendiente")
             )
         elif self.source_list == "migracion_post_pre":
             title = fields.get("Title")
