@@ -491,12 +491,12 @@ const App = () => {
               <tr>
                 <th 
                   className="text-left sortable-header"
-                  onClick={() => handleSort('title')}
+                  onClick={() => handleSort('id')}
                   style={{ width: '15%' }}
                 >
                   <div className="flex items-center gap-2">
-                    Identificador
-                    <SortIcon column="title" sortConfig={sortConfig} />
+                    ID SharePoint
+                    <SortIcon column="id" sortConfig={sortConfig} />
                   </div>
                 </th>
                 <th 
@@ -519,10 +519,15 @@ const App = () => {
                     <SortIcon column="created" sortConfig={sortConfig} />
                   </div>
                 </th>
+                <th className="text-left" style={{ width: '20%' }}>
+                  <div className="flex items-center gap-2">
+                    Tipo de Baja
+                  </div>
+                </th>
                 <th 
                   className="text-left sortable-header"
                   onClick={() => handleSort('status')}
-                  style={{ width: '20%' }}
+                  style={{ width: '15%' }}
                 >
                   <div className="flex items-center gap-2">
                     Estatus
@@ -536,8 +541,12 @@ const App = () => {
               {hasSearched && paginatedItems.map((item) => (
                 <tr key={item?.id || Math.random()} className="hover:bg-white-5 transition-all group">
                   <td className="whitespace-nowrap">
-                    <div className="text-white font-bold group-hover:text-primary transition-colors text-sm">{item?.title || 'Sin Título'}</div>
-                    <div className="text-[9px] text-text-dark font-mono uppercase mt-0.5 opacity-60">{(item?.id?.split?.(',')[2]) || item?.id || 'N/A'}</div>
+                    <div className="text-white font-bold group-hover:text-primary transition-colors text-sm">
+                      {(item?.id?.split?.(',')?.pop?.()) || item?.id || 'N/A'}
+                    </div>
+                    <div className="text-[9px] text-text-dark font-mono uppercase mt-0.5 opacity-60">
+                      Ref: {item?.title || 'Sin Título'}
+                    </div>
                   </td>
                   <td>
                     <div className="flex items-center gap-3 overflow-hidden">
@@ -556,6 +565,11 @@ const App = () => {
                     </div>
                   </td>
                   <td className="whitespace-nowrap">
+                    <div className="text-text-dim text-xs font-medium truncate max-w-[180px]" title={item?.fields?.eTipoBaja || item?.fields?.TipoBaja || 'N/A'}>
+                      {item?.fields?.eTipoBaja || item?.fields?.TipoBaja || 'N/A'}
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap">
                     <span className={`status-badge ${String(item?.status || "").toLowerCase()}`}>
                       <div className={`w-1.5 h-1.5 rounded-full ${String(item?.status || "").toLowerCase() === 'pendiente' ? 'bg-[#fb7185]' : 'bg-[#34d399]'}`} />
                       {item?.status || 'N/A'}
@@ -571,7 +585,7 @@ const App = () => {
               
               {(!hasSearched || (filteredAndSortedItems.length === 0 && !loading)) && (
                 <tr>
-                  <td colSpan="5" className="py-24 text-center">
+                  <td colSpan="6" className="py-24 text-center">
                     <div className="flex-center flex-col gap-4 opacity-60">
                       <div className="w-16 h-16 bg-white-5 rounded-2xl flex-center mb-2">
                         <Filter size={32} className="text-text-dark" />

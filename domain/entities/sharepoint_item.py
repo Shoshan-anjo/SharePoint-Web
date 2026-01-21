@@ -46,10 +46,11 @@ class SharePointItem:
     def es_pendiente(self) -> bool:
         fields = self.raw_fields
         if self.source_list == "gestion_baja":
-            # Si el estado general es Finalizado, no puede estar pendiente
-            if fields.get("eEstado") == "Finalizado":
+            # Filtro estricto solicitado por el usuario
+            # Solo "Cambio de Post Pago a Pre Pago R" (valor técnico: Pre Pago R)
+            if fields.get("eTipoBaja") != "Pre Pago R":
                 return False
-                
+
             return (
                 fields.get("eServicio") in ("Móvil", "Móvil B2B") and
                 fields.get("eRetencionEfectiva") == "NO" and
