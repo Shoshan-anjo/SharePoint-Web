@@ -157,7 +157,7 @@ const App = () => {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <div className="w-8 h-1 bg-primary rounded-full" />
-            <span className="text-text-dark font-bold uppercase tracking-widest text-[10px]">Portal de Auditoría Avanzada</span>
+            <span className="text-text-dark font-bold uppercase tracking-widest text-[10px]">Desarrollo de Shohan.abjo</span>
           </div>
           <h1 className="text-5xl font-extrabold title-gradient">Visor de Gestiones</h1>
           <p className="text-text-dim mt-2 text-lg">Control centralizado de gestiones SharePoint</p>
@@ -166,11 +166,11 @@ const App = () => {
         <div className="connection-status glass rounded-3xl flex items-center gap-6 bg-white-5 p-5 px-8 whitespace-nowrap">
            <div className="flex items-center gap-4">
               <div className="text-[11px] uppercase font-bold text-text-dark tracking-widest border-r border-border pr-4">
-                Estado de Conexión
+                Infraestructura
               </div>
               <div className="text-accent text-base font-bold flex items-center gap-2">
                  <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                 Graph API Online
+                 Render Cloud Online
               </div>
            </div>
         </div>
@@ -495,8 +495,11 @@ const App = () => {
 
       {/* Footer */}
       <footer className="mt-16 py-8 border-t border-border text-center animate-in">
-         <p className="text-text-dark text-[10px] font-bold tracking-[0.2em] uppercase mb-4">
-            PPruebas de Anghelo
+         <p className="text-text-dark text-[10px] font-bold tracking-[0.2em] uppercase mb-1">
+            © 2026 Desarrollo por Shoshan-anjo
+         </p>
+         <p className="text-text-dark text-[8px] uppercase tracking-[0.1em] opacity-40 mb-4">
+            Cloud Deployment Portfolio
          </p>
          <div className="flex-center gap-2 opacity-30">
             <div className="w-1 h-1 rounded-full bg-white" />
