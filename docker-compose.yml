@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - SP_SITE_ID=${SP_SITE_ID}
+      - SP_LIST_ID=${SP_LIST_ID}
+      - SP_LIST_ID_2=${SP_LIST_ID_2}
+      - TENANT_ID=${TENANT_ID}
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+    restart: always
+
+  frontend:
+    build:
+      context: ./dashboard-viewer
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: always
