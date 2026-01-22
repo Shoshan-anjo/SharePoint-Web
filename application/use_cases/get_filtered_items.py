@@ -47,7 +47,8 @@ class GetFilteredItemsUseCase:
         # OData Selects
         list1_select = (
             "Title,eServicio,eRetencionEfectiva,eTipoGestion,eFormularioPendiente,"
-            "eDeudaPendiente,eRegularizadoCompleto,eBajaRealizada,eTipoBaja,eEstado,Created,Modified"
+            "eDeudaPendiente,eRegularizadoCompleto,eBajaRealizada,eTipoBaja,eEstado,Created,Modified,"
+            "nLineaContacto,sLineaContacto"
         )
         list2_select = "Title,BajaRealizada,TipodeBaja,Created,Modified"
 

@@ -544,8 +544,8 @@ const App = () => {
                     <div className="text-white font-bold group-hover:text-primary transition-colors text-sm">
                       {(item?.id?.split?.(',')?.pop?.()) || item?.id || 'N/A'}
                     </div>
-                    <div className="text-[9px] text-text-dark font-mono uppercase mt-0.5 opacity-60">
-                      Ref: {item?.title || 'Sin Título'}
+                    <div className="text-[10px] text-text-dark font-mono uppercase mt-0.5 opacity-60">
+                      Celular: {item?.phone_number || 'N/A'}
                     </div>
                   </td>
                   <td>

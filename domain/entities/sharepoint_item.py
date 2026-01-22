@@ -33,6 +33,21 @@ class SharePointItem:
         return str(val if val is not None else "N/A")
 
     @property
+    def phone_number(self) -> str:
+        fields = self.raw_fields
+        # Priorizar nLineaContacto y sLineaContacto para Lista 1
+        # Para Lista 2 (Migración), el número suele estar en Title.
+        val = fields.get("nLineaContacto") or fields.get("sLineaContacto") or fields.get("Title")
+        
+        if val is None:
+            return "N/A"
+            
+        s_val = str(val).strip()
+        if s_val.endswith(".0"):
+            return s_val[:-2]
+        return s_val
+
+    @property
     def fecha_creacion(self) -> Optional[datetime]:
         created = self.raw_fields.get("Created")
         if created:

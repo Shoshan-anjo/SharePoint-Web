@@ -105,6 +105,7 @@ async def get_items(
                 "created": item.fecha_creacion.isoformat() if item.fecha_creacion else None,
                 "status": "Pendiente" if item.es_pendiente() else "Procesado" if item.es_procesado() else "Desconocido",
                 "tipo_baja": item.tipo_baja_display,
+                "phone_number": item.phone_number,
                 "fields": item.raw_fields
             } for item in items
         ]
