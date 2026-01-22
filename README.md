@@ -47,12 +47,21 @@ El sistema cuenta con un Login protegido por **JWT (JSON Web Tokens)**.
 2. El backend valida contra las variables de entorno y devuelve un token.
 3. El frontend almacena el token de forma segura y lo envía en cada petición al API.
 
+## 🔍 Lógica de Filtrado Inteligente
+
+El dashboard aplica filtros estrictos para asegurar que solo los datos relevantes para el RPA sean procesados:
+
+- **Lista 1 (Gestión)**: Solo se muestran registros cuyo tipo de proceso sea **"Cambio de Post Pago a Pre Pago R"**. Se filtran automáticamente otros procesos de migración o bajas generales.
+- **Lista 2 (Migración)**: Se muestran registros que tengan un formato de título numérico válido (número de teléfono).
+- **ID de SharePoint**: El sistema utiliza el ID técnico de SharePoint como identificador principal en la tabla para facilitar la búsqueda directa en el sitio.
+- **Prioridad de Celular**: Se extrae y limpia el número de teléfono desde los campos de contacto de SharePoint (`nLineaContacto`) para mostrarlo de forma prominente.
+
 ## 🛠️ Herramientas de Utilidad
 
 En la carpeta `scripts/` encontrarás:
 
-- `list_available_lists.py`: Muestra las listas disponibles.
-- `inspect_list_schema.py`: Analiza los campos técnicos de las listas.
+- `list_available_lists.py`: Muestra todas las listas disponibles en el sitio de SharePoint configurado.
+- `inspect_list_schema.py`: Muestra todos los campos técnicos y ejemplos de datos de las listas principales.
 
 ---
 

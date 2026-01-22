@@ -19,11 +19,11 @@ def get_access_token() -> str:
         "scope": scope,
     }
 
-    print("🔑 Obteniendo token de acceso...")
+    print("Obteniendo token de acceso...")
     try:
         response = requests.post(url, data=data, timeout=10)
         response.raise_for_status()
-        print("✅ Token obtenido")
+        print("Token obtenido")
         return response.json()["access_token"]
     except requests.exceptions.RequestException as e:
         print(f"❌ Error al obtener token: {e}")
