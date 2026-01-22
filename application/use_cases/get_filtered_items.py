@@ -47,9 +47,9 @@ class GetFilteredItemsUseCase:
         # OData Selects
         list1_select = (
             "Title,eServicio,eRetencionEfectiva,eTipoGestion,eFormularioPendiente,"
-            "eDeudaPendiente,eRegularizadoCompleto,eBajaRealizada,Created"
+            "eDeudaPendiente,eRegularizadoCompleto,eBajaRealizada,eTipoBaja,eEstado,Created,Modified"
         )
-        list2_select = "Title,BajaRealizada,Created"
+        list2_select = "Title,BajaRealizada,TipodeBaja,Created,Modified"
 
         # Filtro de fecha para OData (Solo To Date)
         # OPTIMIZACIÓN: NO enviamos from_date al servidor. 
